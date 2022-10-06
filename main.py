@@ -42,7 +42,7 @@ def FileImageExist():
 
 # 各種ウィジェットの作成
 text = ttk.Label(frame, text='フォルダ指定：')
-text_error = ttk.Label(frame, text='')
+text_error = ttk.Label(frame, text='',foreground='#ff0000')
 entry = ttk.Entry(frame)
 button_fopen = ttk.Button(frame, text='参照', command=lambda:OpenFileOnExploror())
 button_execute = ttk.Button(frame, text='実行', command=lambda:FileImageExist())
