@@ -3,6 +3,8 @@ import os
 import tkinter as tk
 from tkinter import ttk as ttk
 import tkinter.filedialog as filedialog
+from PIL import ImageTk
+from PIL import Image
 
 # * rootメインウィンドウの設定など
 root = tk.Tk()
@@ -33,30 +35,48 @@ def FileImageExist():
     #print(ext)
     if(name == ''):
         text_error["text"] = 'ファイルを指定してください。'
-        print('ファイルを指定してください。')
     elif(ext == '.jpg' or ext == '.png'):
         text_error["text"] = 'これは画像ファイルです。'
-        print('これは画像ファイルです。')
+        imgPIL = Image.open(entry.get())
+        photo_image = ImageTk.PhotoImage(image=imgPIL)
+        """
+        画像までたどり着けてるかチェックする
+        imgPIL = Image.open(entry.get())
+        imgPIL.show()
+        """
+        canvas_width = canvas.winfo_width()
+        canvas_height = canvas.winfo_height()
+        # * 画像の表示
+        canvas.create_image(
+            canvas_width / 2,
+            canvas_height / 2,
+            image = photo_image
+        )
+        frame.update()
     else:
         text_error["text"] = 'これは画像ファイルではありません。'
-        print('これは画像ファイルではありません。')
 
 # * 各種ウィジェットの作成
-# TODO: 選択したファイルが画像だった場合に画像を表示するUIを作る
+# TODO: 選択したファイルが画像だった場合に画像を表示するUIを作ったが、画像が表示されないという不具合が発生中
+canvas = tk.Canvas(frame)
 text = ttk.Label(frame, text='フォルダ指定：')
 text_error = ttk.Label(frame, text='',foreground='#ff0000')
 entry = ttk.Entry(frame)
 button_FileOpen = ttk.Button(frame, text='参照', command=lambda:OpenFileOnExplorer())
 button_execute = ttk.Button(frame, text='実行', command=lambda:FileImageExist())
-button_exit = ttk.Button(frame,text='終了',command = lambda:ExitApplication())
+button_exit = ttk.Button(frame,text='終了', command=lambda:ExitApplication())
 
 # * 各種ウィジェットの設置
-# TODO: 画像を表示するスペースを作りたいので以下のUIを下のほうに持っていく
-text.grid(row=0, column=0)
-entry.grid(row=0, column=1,ipadx=40)
-button_FileOpen.grid(row=0, column=2)
-button_execute.grid(row=1, column=1)
-text_error.grid(row=2,column=1)
-button_exit.grid(row=3,column=0)
+"""
+    offset:画像を表示するための空白を作っておくためのタプル
+"""
+#offset = (390,0)
+canvas.grid(row=0, column=1)
+text.grid(row=1, column=0)
+entry.grid(row=1, column=1,ipadx=40)
+button_FileOpen.grid(row=1, column=2)
+button_execute.grid(row=2, column=1)
+text_error.grid(row=3,column=1)
+button_exit.grid(row=4,column=0)
 
 root.mainloop()
