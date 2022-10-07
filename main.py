@@ -1,15 +1,13 @@
 import sys
 import os
 import tkinter as tk
-from tkinter import ttk as ttk
-import tkinter.filedialog as filedialog
-from PIL import ImageTk
-from PIL import Image
+from tkinter import ttk,filedialog as filedialog
+from PIL import ImageTk,Image
 
 # * rootメインウィンドウの設定など
 root = tk.Tk()
 root.title('tkinterによるGUI画面作成')
-root.geometry('500x500')
+root.geometry('600x500')
 
 # * メインフレームの作成と設置
 frame = ttk.Frame(root)
@@ -35,45 +33,43 @@ def FileImageExist():
     #print(ext)
     if(name == ''):
         text_error["text"] = 'ファイルを指定してください。'
+
     elif(ext == '.jpg' or ext == '.png'):
         text_error["text"] = 'これは画像ファイルです。'
-        imgPIL = Image.open(entry.get())
-        photo_image = ImageTk.PhotoImage(image=imgPIL)
-        """
-        画像までたどり着けてるかチェックする
-        imgPIL = Image.open(entry.get())
-        imgPIL.show()
-        """
+        # * -------------画像の表示-----------------
+        imgPIL = Image.open(open(entry.get(),'rb'))
+        imgPIL = imgPIL.resize((200,400))
+
+        global photo_image
+        photo_image = ImageTk.PhotoImage(imgPIL)
+
+        frame.update()
         canvas_width = canvas.winfo_width()
         canvas_height = canvas.winfo_height()
-        # * 画像の表示
         canvas.create_image(
-            canvas_width / 2,
-            canvas_height / 2,
+            canvas_width/2,
+            canvas_height/2,
             image = photo_image
         )
-        frame.update()
+        #*-----------------------------------------
+
     else:
         text_error["text"] = 'これは画像ファイルではありません。'
 
 # * 各種ウィジェットの作成
 # TODO: 選択したファイルが画像だった場合に画像を表示するUIを作ったが、画像が表示されないという不具合が発生中
-canvas = tk.Canvas(frame)
+canvas = tk.Canvas(frame,bg="white", height=200, width=400)
 text = ttk.Label(frame, text='フォルダ指定：')
 text_error = ttk.Label(frame, text='',foreground='#ff0000')
 entry = ttk.Entry(frame)
 button_FileOpen = ttk.Button(frame, text='参照', command=lambda:OpenFileOnExplorer())
 button_execute = ttk.Button(frame, text='実行', command=lambda:FileImageExist())
-button_exit = ttk.Button(frame,text='終了', command=lambda:ExitApplication())
+button_exit = ttk.Button(frame, text='終了', command=lambda:ExitApplication())
 
 # * 各種ウィジェットの設置
-"""
-    offset:画像を表示するための空白を作っておくためのタプル
-"""
-#offset = (390,0)
 canvas.grid(row=0, column=1)
 text.grid(row=1, column=0)
-entry.grid(row=1, column=1,ipadx=40)
+entry.grid(row=1, column=1,ipadx=100)
 button_FileOpen.grid(row=1, column=2)
 button_execute.grid(row=2, column=1)
 text_error.grid(row=3,column=1)
