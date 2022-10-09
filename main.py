@@ -1,3 +1,4 @@
+#インポート
 import sys
 import os
 import tkinter as tk
@@ -27,42 +28,49 @@ def OpenFileOnExplorer():
 
 # TODO: 画像の編集をする関数を作る
 
-# * 指定したファイルが画像ファイルかどうかを判定する
+"""
+* 指定したファイルが画像ファイルかどうかを判定する
+* 画像ファイルだった場合はtrueが、そうでなかった場合はfalseが返ってくる
+"""
 def FileImageExist():
     name, ext = os.path.splitext(entry.get())
     #print(ext)
     if(name == ''):
         text_error["text"] = 'ファイルを指定してください。'
-
+        return False
     elif(ext == '.jpg' or ext == '.png'):
         text_error["text"] = 'これは画像ファイルです。'
-        # * -------------画像の表示-----------------
-        imgPIL = Image.open(open(entry.get(),'rb'))
-        imgPIL = imgPIL.resize((200,400))
-
-        global photo_image
-        photo_image = ImageTk.PhotoImage(imgPIL)
-
-        frame.update()
-        canvas_width = canvas.winfo_width()
-        canvas_height = canvas.winfo_height()
-        canvas.create_image(
-            canvas_width/2,
-            canvas_height/2,
-            image = photo_image
-        )
-        #*-----------------------------------------
-
+        return True
     else:
         text_error["text"] = 'これは画像ファイルではありません。'
+        return False
+
+# * -------------画像の表示-----------------
+def Show_image():
+    imgPIL = Image.open(open(entry.get(),'rb'))
+    imgPIL = imgPIL.resize((200,400))
+
+    global photo_image
+    photo_image = ImageTk.PhotoImage(imgPIL)
+
+    frame.update()
+    canvas_width = canvas.winfo_width()
+    canvas_height = canvas.winfo_height()
+    canvas.create_image(
+        canvas_width/2,
+        canvas_height/2,
+        image = photo_image
+    )
+#*-----------------------------------------
 
 # * 各種ウィジェットの作成
-# TODO: 選択したファイルが画像だった場合に画像を表示するUIを作ったが、画像が表示されないという不具合が発生中
 canvas = tk.Canvas(frame,bg="white", height=200, width=400)
 text = ttk.Label(frame, text='フォルダ指定：')
 text_error = ttk.Label(frame, text='',foreground='#ff0000')
 entry = ttk.Entry(frame)
 button_FileOpen = ttk.Button(frame, text='参照', command=lambda:OpenFileOnExplorer())
+#TODO:画像の編集ボタンに画像の編集をする関数を割り当てる4
+button_EditImage = ttk.Button(frame, text='編集')
 button_execute = ttk.Button(frame, text='実行', command=lambda:FileImageExist())
 button_exit = ttk.Button(frame, text='終了', command=lambda:ExitApplication())
 
