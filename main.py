@@ -2,7 +2,7 @@
 import sys
 import os
 import tkinter as tk
-from tkinter import ttk,filedialog as filedialog
+from tkinter import ttk,filedialog as filedialog,messagebox
 from PIL import ImageTk,Image
 
 # * rootメインウィンドウの設定など
@@ -16,8 +16,10 @@ frame.grid(column=0, row=0, sticky=tk.NSEW, padx=5, pady=10)
 
 # * 関数の定義
 def ExitApplication():
-    root.quit()
-    sys.exit()
+    ret = messagebox.askyesno('アプリケーションの終了','アプリケーションを終了しますか？')
+    if(ret == True):
+        root.quit()
+        sys.exit()
 
 # * ファイルの閲覧
 def OpenFileOnExplorer():
