@@ -29,7 +29,7 @@ def OpenImageOnExplorer():
     entry_ImagePath.insert(0,filepath)
     isImage = FileImageExist()
     Show_image(isImage)
-    
+
 #*保存先の指定
 def OpenSaveFolderOnExplorer():
     inipath = '/'
@@ -57,7 +57,7 @@ def FileImageExist():
 def Show_image(_isImage):
     if(_isImage == True):
         imgPIL = Image.open(open(entry_ImagePath.get(),'rb'))
-        imgPIL = imgPIL.resize((200,800))
+        imgPIL = imgPIL.resize((400,200))
 
         global photo_image
         photo_image = ImageTk.PhotoImage(imgPIL)
