@@ -37,6 +37,7 @@ def OpenSaveFolderOnExplorer():
     entry_SavePath.delete(0,tk.END)
     entry_SavePath.insert(0,saveFolderPath)
 # TODO: 画像の編集をする関数を作る
+#TODO: 画像の保存を行う関数を作る
 
 """
 * 指定したファイルが画像ファイルかどうかを判定する
