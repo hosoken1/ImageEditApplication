@@ -37,12 +37,14 @@ def OpenSaveFolderOnExplorer():
     saveFolderPath = filedialog.askdirectory()
     entry_SavePath.delete(0,tk.END)
     entry_SavePath.insert(0,saveFolderPath)
-# TODO: 画像の編集をする関数を作る
-#TODO: 画像の保存を行う関数を作る
+#TODO: 画像の編集をする関数を作る
+def EditImageMono(_img):
+    _img_mono = _img.convert(mode='1')
+    return _img_mono
 """
-*画像の保存をする関数
-*保存先が指定されていないまたは指定されたファイルが画像ではない場合に
-*保存をせずに終了する
+画像の保存をする関数
+保存先が指定されていないまたは指定されたファイルが画像ではない場合に
+保存をせずに終了する
 """
 def SaveImage():
     saveFolderPath = entry_SavePath.get()
@@ -52,21 +54,31 @@ def SaveImage():
         ErrorMessage('画像ファイルが指定されていないまたは保存先を指定されていないです')
         return
     image = Image.open(imageFilePath)
-    
+
+    #********************画像の変換********************************
+    image_mono = EditImageMono(image)
+    #*************************************************************
+
     #*******************保存先のパスの設定*****************************************
     baseFileName = os.path.basename(imageFilePath)
-    baseFileNameWithoutExt = os.path.splitext(os.path.basename(baseFileName))[0]
+    baseFileNameWithoutExt,ext = os.path.splitext(os.path.basename(baseFileName))
     print(baseFileNameWithoutExt)
+    print(ext)
     savePath = saveFolderPath + '/' + baseFileName
+    savePath_mono = saveFolderPath + '/' + baseFileNameWithoutExt + '_mono' + ext
     print(savePath)
+    print(savePath_mono)
     #***************************************************************************
     image.save(savePath,quality=90)
+    image_mono.save(savePath_mono,quality=90)
+
+
     #subprocess.Popen(["explorer",savePath],shell = True)
     #filedialog.Open(savePath)
-        
+
 """
-* 指定したファイルが画像ファイルかどうかを判定する
-* 画像ファイルだった場合はtrueが、そうでなかった場合はfalseが返ってくる
+指定したファイルが画像ファイルかどうかを判定する
+画像ファイルだった場合はtrueが、そうでなかった場合はfalseが返ってくる
 """
 def FileImageExist():
     name, ext = os.path.splitext(entry_ImagePath.get())
@@ -112,7 +124,7 @@ entry_SavePath = ttk.Entry(frame)
 button_FileOpen = ttk.Button(frame, text='参照', command=lambda:OpenImageOnExplorer())
 button_SaveFolderOpen = ttk.Button(frame, text='保存先指定', command=lambda:OpenSaveFolderOnExplorer())
 #TODO:画像の編集ボタンに画像の編集をする関数を割り当てる4
-button_EditImage = ttk.Button(frame, text='編集')
+button_EditImage = ttk.Button(frame, text='編集設定')
 button_Save = ttk.Button(frame, text='保存', command=lambda:SaveImage())
 button_exit = ttk.Button(frame, text='終了', command=lambda:ExitApplication())
 
