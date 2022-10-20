@@ -1,6 +1,7 @@
 #インポート
 import sys
 import os
+import subprocess
 import tkinter as tk
 from tkinter import ttk,filedialog as filedialog,messagebox
 from PIL import ImageTk,Image
@@ -38,7 +39,31 @@ def OpenSaveFolderOnExplorer():
     entry_SavePath.insert(0,saveFolderPath)
 # TODO: 画像の編集をする関数を作る
 #TODO: 画像の保存を行う関数を作る
-
+"""
+*画像の保存をする関数
+*保存先が指定されていないまたは指定されたファイルが画像ではない場合に
+*保存をせずに終了する
+"""
+def SaveImage():
+    saveFolderPath = entry_SavePath.get()
+    imageFilePath = entry_ImagePath.get()
+    #保存先が指定されていない、もしくは画像ファイルが指定されていないケースを検知する
+    if(FileImageExist() == False or saveFolderPath == ''):
+        ErrorMessage('画像ファイルが指定されていないまたは保存先を指定されていないです')
+        return
+    image = Image.open(imageFilePath)
+    
+    #*******************保存先のパスの設定*****************************************
+    baseFileName = os.path.basename(imageFilePath)
+    baseFileNameWithoutExt = os.path.splitext(os.path.basename(baseFileName))[0]
+    print(baseFileNameWithoutExt)
+    savePath = saveFolderPath + '/' + baseFileName
+    print(savePath)
+    #***************************************************************************
+    image.save(savePath,quality=90)
+    #subprocess.Popen(["explorer",savePath],shell = True)
+    #filedialog.Open(savePath)
+        
 """
 * 指定したファイルが画像ファイルかどうかを判定する
 * 画像ファイルだった場合はtrueが、そうでなかった場合はfalseが返ってくる
@@ -46,13 +71,17 @@ def OpenSaveFolderOnExplorer():
 def FileImageExist():
     name, ext = os.path.splitext(entry_ImagePath.get())
     if(name == ''):
-        text_error["text"] = 'ファイルを指定してください。'
+        ErrorMessage('画像ファイルを指定してください。')
         return False
     elif(ext == '.jpg' or ext == '.png'):
         return True
     else:
-        text_error["text"] = 'これは画像ファイルではありません。'
+        ErrorMessage('これは画像ファイルではありません。')
         return False
+
+# * エラーメッセージを表示する関数
+def ErrorMessage(_message):
+    text_error["text"] = _message
 
 # * -------------画像の表示-----------------
 def Show_image(_isImage):
@@ -84,7 +113,7 @@ button_FileOpen = ttk.Button(frame, text='参照', command=lambda:OpenImageOnExp
 button_SaveFolderOpen = ttk.Button(frame, text='保存先指定', command=lambda:OpenSaveFolderOnExplorer())
 #TODO:画像の編集ボタンに画像の編集をする関数を割り当てる4
 button_EditImage = ttk.Button(frame, text='編集')
-button_execute = ttk.Button(frame, text='保存')
+button_Save = ttk.Button(frame, text='保存', command=lambda:SaveImage())
 button_exit = ttk.Button(frame, text='終了', command=lambda:ExitApplication())
 
 # * 各種ウィジェットの設置
@@ -99,7 +128,7 @@ text_SaveFolder.grid(row=2, column=0)
 entry_SavePath.grid(row=2, column=1,ipadx=100)
 button_SaveFolderOpen.grid(row=2, column=2)
 #raw3
-button_execute.grid(row=3, column=2)
+button_Save.grid(row=3, column=2)
 #raw4
 button_EditImage.grid(row=4, column=2)
 text_error.grid(row=4,column=1)
