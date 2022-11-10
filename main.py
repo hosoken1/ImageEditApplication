@@ -1,10 +1,12 @@
 #インポート
 import sys
 import os
-import subprocess
+import subprocess,shlex
 import tkinter as tk
 from tkinter import ttk,filedialog as filedialog,messagebox
 from PIL import ImageTk,Image
+
+
 
 # * rootメインウィンドウの設定など
 root = tk.Tk()
@@ -148,3 +150,6 @@ text_error.grid(row=4,column=1)
 button_exit.grid(row=5,column=0)
 
 root.mainloop()
+#*テスト
+args = shlex.split("mkdir ./abc")
+proc = subprocess.call(args)
