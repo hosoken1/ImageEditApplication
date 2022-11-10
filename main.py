@@ -5,9 +5,9 @@ import subprocess,shlex
 import tkinter as tk
 from tkinter import ttk,filedialog as filedialog,messagebox
 from PIL import ImageTk,Image
-
-
-
+#*テスト
+args = shlex.split("mkdir ./abc")
+proc = subprocess.call(args)
 # * rootメインウィンドウの設定など
 root = tk.Tk()
 root.title('tkinterによるGUI画面作成')
@@ -151,5 +151,5 @@ button_exit.grid(row=5,column=0)
 
 root.mainloop()
 #*テスト
-args = shlex.split("mkdir ./abc")
-proc = subprocess.call(args)
+#args = shlex.split("mkdir ./abc")
+#proc = subprocess.call(args)
