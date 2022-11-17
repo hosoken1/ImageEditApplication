@@ -1,17 +1,19 @@
 #インポート
 import sys
 import os
-import subprocess,shlex
 import tkinter as tk
 from tkinter import ttk,filedialog as filedialog,messagebox
 from PIL import ImageTk,Image
-#*テスト
-args = shlex.split("mkdir ./abc")
-proc = subprocess.call(args)
+
+global isMono,isGray
+isMono = True
+isGray = True
+
 # * rootメインウィンドウの設定など
 root = tk.Tk()
 root.title('tkinterによるGUI画面作成')
 root.geometry('600x500')
+
 
 # * メインフレームの作成と設置
 frame = ttk.Frame(root)
@@ -75,9 +77,6 @@ def SaveImage():
     image_mono.save(savePath_mono,quality=90)
 
 
-    #subprocess.Popen(["explorer",savePath],shell = True)
-    #filedialog.Open(savePath)
-
 """
 指定したファイルが画像ファイルかどうかを判定する
 画像ファイルだった場合はtrueが、そうでなかった場合はfalseが返ってくる
@@ -115,6 +114,50 @@ def Show_image(_isImage):
             image = photo_image
         )
 #*-----------------------------------------
+"""
+元の画面が動かせない状態で設定画面を開く
+"""
+# * --------------設定画面--------------
+def CreateSettingWindow():
+    settingwindow = tk.Toplevel()
+    settingwindow.title('設定画面')
+    settingwindow.geometry('300x250')
+    settingwindow.grab_set()
+    settingwindow.focus_set()
+    #*各種GUIの作成
+    #text
+    text_deka = ttk.Label(settingwindow,text='編集の設定')
+    text_mono = ttk.Label(settingwindow,text='モノクロ画像の生成')
+    text_gray = ttk.Label(settingwindow,text='グレー画像の生成')
+    #toggle button
+    toggleB_mono = ttk.Button(settingwindow, text='ON' if isMono else 'OFF',command=lambda:Switch_isMono())
+    toggleB_mono.bind("<ButtonPress>",Toggle_Func)
+    toggleB_gray = ttk.Button(settingwindow, text='ON' if isGray else 'OFF',command=lambda:Switch_isGray())
+    toggleB_gray.bind("<ButtonPress>",Toggle_Func)
+    #*各種GUIの配置
+    #1行目
+    text_deka.grid(row=0,column=0)
+    #2行目
+    text_mono.grid(row=1,column=0)
+    toggleB_mono.grid(row=1,column=1)
+    #3行目
+    text_gray.grid(row=2,column=0)
+    toggleB_gray.grid(row=2,column=1)
+    
+def Toggle_Func(event):
+    if(event.widget.cget("text") == 'ON'):
+        event.widget["text"] = 'OFF'
+    elif(event.widget.cget("text") == 'OFF'):
+        event.widget["text"] = 'ON'
+def Switch_isMono():
+    #turnedMono = not isMono
+    #isMono = turnedMono
+    print(not isMono)
+def Switch_isGray():
+#     turnedGray = not isGray
+#     isGray = turnedGray
+    print(not isGray)
+# * ---------------------------------------
 
 # * 各種ウィジェットの作成
 canvas = tk.Canvas(frame,bg="white", height=200, width=400)
@@ -125,8 +168,7 @@ entry_ImagePath = ttk.Entry(frame)
 entry_SavePath = ttk.Entry(frame)
 button_FileOpen = ttk.Button(frame, text='参照', command=lambda:OpenImageOnExplorer())
 button_SaveFolderOpen = ttk.Button(frame, text='保存先指定', command=lambda:OpenSaveFolderOnExplorer())
-#TODO:画像の編集ボタンに画像の編集をする関数を割り当てる4
-button_EditImage = ttk.Button(frame, text='編集設定')
+button_EditImage = ttk.Button(frame, text='編集設定',command=lambda:CreateSettingWindow())
 button_Save = ttk.Button(frame, text='保存', command=lambda:SaveImage())
 button_exit = ttk.Button(frame, text='終了', command=lambda:ExitApplication())
 
@@ -150,6 +192,3 @@ text_error.grid(row=4,column=1)
 button_exit.grid(row=5,column=0)
 
 root.mainloop()
-#*テスト
-#args = shlex.split("mkdir ./abc")
-#proc = subprocess.call(args)
