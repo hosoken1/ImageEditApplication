@@ -5,9 +5,13 @@ import tkinter as tk
 from tkinter import ttk,filedialog as filedialog,messagebox
 from PIL import ImageTk,Image
 
-global isMono,isGray
+#初期化
+isSave = True
 isMono = True
 isGray = True
+isResize = True
+resize_width = 0
+resize_height = 0
 
 # * rootメインウィンドウの設定など
 root = tk.Tk()
@@ -45,37 +49,60 @@ def OpenSaveFolderOnExplorer():
 def EditImageMono(_img):
     _img_mono = _img.convert(mode='1')
     return _img_mono
+def EditImageGray(_img):
+    _img_mono = _img.convert(mode='L')
+    return _img_mono
+def EditImageResize(_img):
+    print(resize_width)
+    print(resize_height)
+    _img_resized = _img.resize((int(resize_width),int(resize_height)))
+    return _img_resized
 """
 画像の保存をする関数
-保存先が指定されていないまたは指定されたファイルが画像ではない場合に
-保存をせずに終了する
+*保存先が指定されていないまたは指定されたファイルが画像ではない場合に
+ 保存をせずに終了する。
+*事前に指定された編集方法を実行する。
 """
 def SaveImage():
+    #各種パスの設定
     saveFolderPath = entry_SavePath.get()
     imageFilePath = entry_ImagePath.get()
+    baseFileName = os.path.basename(imageFilePath)
+    baseFileNameWithoutExt,ext = os.path.splitext(os.path.basename(baseFileName))
+    savePath = saveFolderPath + '/' + baseFileName
+    #print(baseFileNameWithoutExt)
+    #print(ext)
+    #print(savePath)
+
     #保存先が指定されていない、もしくは画像ファイルが指定されていないケースを検知する
     if(FileImageExist() == False or saveFolderPath == ''):
         ErrorMessage('画像ファイルが指定されていないまたは保存先を指定されていないです')
         return
+    #元の画像の読み込み
     image = Image.open(imageFilePath)
 
-    #********************画像の変換********************************
-    image_mono = EditImageMono(image)
-    #*************************************************************
+    #元の画像を保存する
+    if(isSave == True):
+        image.save(savePath,quality=90)
 
-    #*******************保存先のパスの設定*****************************************
-    baseFileName = os.path.basename(imageFilePath)
-    baseFileNameWithoutExt,ext = os.path.splitext(os.path.basename(baseFileName))
-    print(baseFileNameWithoutExt)
-    print(ext)
-    savePath = saveFolderPath + '/' + baseFileName
-    savePath_mono = saveFolderPath + '/' + baseFileNameWithoutExt + '_mono' + ext
-    print(savePath)
-    print(savePath_mono)
+    #***************モノクロ画像への変換******************************
+    if(isMono==True):
+        image_mono = EditImageMono(image)
+        savePath_mono = saveFolderPath + '/' + baseFileNameWithoutExt + '_mono' + ext        
+        image_mono.save(savePath_mono,quality=90)
+        print(savePath_mono)
+    #***************グレー画像への変換*******************************
+    if(isGray==True):
+        image_gray = EditImageGray(image)
+        savePath_gray = saveFolderPath + '/' + baseFileNameWithoutExt + '_gray' + ext        
+        image_gray.save(savePath_gray,quality=90)
+        print(savePath_gray)
+    if(isResize == True):
+        image_resized = EditImageResize(image)
+        savePath_resize = saveFolderPath + '/' + baseFileNameWithoutExt + '_resized_'+ resize_width + 'x'+ resize_height + ext        
+        image_resized.save(savePath_resize,quality=90)
+        print(savePath_resize)
     #***************************************************************************
-    image.save(savePath,quality=90)
-    image_mono.save(savePath_mono,quality=90)
-
 
 """
 指定したファイルが画像ファイルかどうかを判定する
@@ -121,42 +148,77 @@ def Show_image(_isImage):
 def CreateSettingWindow():
     settingwindow = tk.Toplevel()
     settingwindow.title('設定画面')
-    settingwindow.geometry('300x250')
+    settingwindow.geometry('500x300')
     settingwindow.grab_set()
     settingwindow.focus_set()
     #*各種GUIの作成
     #text
     text_deka = ttk.Label(settingwindow,text='編集の設定')
+    text_save = ttk.Label(settingwindow,text='元の画像の保存')
     text_mono = ttk.Label(settingwindow,text='モノクロ画像の生成')
     text_gray = ttk.Label(settingwindow,text='グレー画像の生成')
+    text_resize = ttk.Label(settingwindow,text='画像のリサイズ')
+    text_resize_height = ttk.Label(settingwindow,text='Height:')
+    text_resize_width = ttk.Label(settingwindow,text='Width:')
     #toggle button
+    toggleB_save = ttk.Button(settingwindow, text='ON' if isSave else 'OFF',command=lambda:Switch_isSave())
+    toggleB_save.bind("<ButtonPress>",Toggle_Func)
     toggleB_mono = ttk.Button(settingwindow, text='ON' if isMono else 'OFF',command=lambda:Switch_isMono())
     toggleB_mono.bind("<ButtonPress>",Toggle_Func)
     toggleB_gray = ttk.Button(settingwindow, text='ON' if isGray else 'OFF',command=lambda:Switch_isGray())
     toggleB_gray.bind("<ButtonPress>",Toggle_Func)
+    toggleB_resize = ttk.Button(settingwindow, text='ON' if isResize else 'OFF',command=lambda:Switch_isResize())
+    toggleB_resize.bind("<ButtonPress>",Toggle_Func)
+    #Button
+    button_apply = ttk.Button(settingwindow, text='適用',command=lambda:Apply())
+    #Entry
+    global entry_Resize_Width,entry_Resize_Height
+    entry_Resize_Width = ttk.Entry(settingwindow,width=10)
+    entry_Resize_Height = ttk.Entry(settingwindow,width=10)
     #*各種GUIの配置
     #1行目
     text_deka.grid(row=0,column=0)
     #2行目
-    text_mono.grid(row=1,column=0)
-    toggleB_mono.grid(row=1,column=1)
+    text_save.grid(row=1,column=0)
+    toggleB_save.grid(row=1,column=1)
     #3行目
-    text_gray.grid(row=2,column=0)
-    toggleB_gray.grid(row=2,column=1)
+    text_mono.grid(row=2,column=0)
+    toggleB_mono.grid(row=2,column=1)
+    #4行目
+    text_gray.grid(row=3,column=0)
+    toggleB_gray.grid(row=3,column=1)
+    #5行目
+    text_resize.grid(row=4,column=0)
+    toggleB_resize.grid(row=4,column=1)
+    #6行目
+    text_resize_width.grid(row=5,column=0)
+    entry_Resize_Width.grid(row=5,column=1)
+    text_resize_height.grid(row=5,column=2)
+    entry_Resize_Height.grid(row=5,column=3)
+    #7行目
+    button_apply.grid(row=6,column=3)
     
 def Toggle_Func(event):
     if(event.widget.cget("text") == 'ON'):
         event.widget["text"] = 'OFF'
     elif(event.widget.cget("text") == 'OFF'):
         event.widget["text"] = 'ON'
+def Switch_isSave():
+    global isSave
+    isSave = not isSave
 def Switch_isMono():
-    #turnedMono = not isMono
-    #isMono = turnedMono
-    print(not isMono)
+    global isMono
+    isMono = not isMono
 def Switch_isGray():
-#     turnedGray = not isGray
-#     isGray = turnedGray
-    print(not isGray)
+    global isGray
+    isGray = not isGray
+def Switch_isResize():
+    global isResize
+    isResize = not isResize
+def Apply():
+    global resize_width,resize_height
+    resize_width = entry_Resize_Width.get()
+    resize_height = entry_Resize_Height.get()
 # * ---------------------------------------
 
 # * 各種ウィジェットの作成
