@@ -16,7 +16,7 @@ resize_height = 0
 # * rootメインウィンドウの設定など
 root = tk.Tk()
 root.title('tkinterによるGUI画面作成')
-root.geometry('600x500')
+root.geometry('600x400')
 
 
 # * メインフレームの作成と設置
@@ -46,6 +46,11 @@ def OpenSaveFolderOnExplorer():
     entry_SavePath.delete(0,tk.END)
     entry_SavePath.insert(0,saveFolderPath)
 
+# * 文字列検証関数
+def Validation(before_word, after_word):
+    return ((after_word.isdecimal()) and (len(after_word)<=4)) or (len(after_word) == 0)
+
+#*-------------画像の編集をする関数----------------------------------------
 def EditImageMono(_img):
     _img_mono = _img.convert(mode='1')
     return _img_mono
@@ -59,11 +64,12 @@ def EditImageResize(_img):
     print(resize_height)
     _img_resized = _img.resize((int(resize_width),int(resize_height)))
     return _img_resized
+#*-----------------------------------------------------------------------
 """
 画像の保存をする関数
-*保存先が指定されていないまたは指定されたファイルが画像ではない場合に
+保存先が指定されていないまたは指定されたファイルが画像ではない場合に
 保存をせずに終了する。
-*事前に指定された編集方法を実行する。
+事前に指定された編集方法を実行する。
 """
 def SaveImage():
     #各種パスの設定
@@ -178,7 +184,13 @@ def CreateSettingWindow():
     entry_Resize_Height = ttk.Entry(settingWindow,width=10)
     entry_Resize_Height.insert(0,str(resize_height))
 
-    #*各種GUIの配置
+    #Validate機能を使って文字制限をかけたいが動かない
+    vcmd_Resize_Height = (entry_Resize_Height.register(Validation), '%s', '%P')
+    vcmd_Resize_Width = (entry_Resize_Width.register(Validation), '%s', '%P')
+    entry_Resize_Height.configure(validate='key', validatecommand=vcmd_Resize_Height)
+    entry_Resize_Width.configure(validate='key', validatecommand=vcmd_Resize_Width)
+
+    #*-----------------各種GUIの配置-------------------
     #---------------------1行目-----------------------
     text_Title.grid(row=0,column=0)
     #---------------------2行目-----------------------
@@ -200,7 +212,7 @@ def CreateSettingWindow():
     entry_Resize_Height.grid(row=5,column=3)
     button_Apply.grid(row=5,column=4)
     #---------------------7行目-----------------------
-
+    #*------------------------------------------------
 def Toggle_Func(event):
     if(event.widget.cget("text") == 'ON'):
         event.widget["text"] = 'OFF'
@@ -222,9 +234,10 @@ def Apply():
     global resize_width,resize_height
     resize_width = entry_Resize_Width.get()
     resize_height = entry_Resize_Height.get()
+
 # * -----------------------------------------------------------------
 
-# * 各種ウィジェットの作成
+# * --------------各種ウィジェットの作成-------------------------------
 canvas = tk.Canvas(frame,bg="white", height=200, width=400)
 text = ttk.Label(frame, text='フォルダ指定：')
 text_SaveFolder = ttk.Label(frame, text='保存先：')
@@ -236,8 +249,8 @@ button_SaveFolderOpen = ttk.Button(frame, text='保存先指定', command=lambda
 button_EditImage = ttk.Button(frame, text='編集設定',command=lambda:CreateSettingWindow())
 button_Save = ttk.Button(frame, text='保存', command=lambda:SaveImage())
 button_exit = ttk.Button(frame, text='終了', command=lambda:ExitApplication())
-
-# * 各種ウィジェットの設置
+#*--------------------------------------------------------------------
+# * -----------------各種ウィジェットの設置-----------------------------
 #canvas
 canvas.grid(row=0, column=1)
 #raw1 SelectImageFile
@@ -248,12 +261,12 @@ button_FileOpen.grid(row=1, column=2)
 text_SaveFolder.grid(row=2, column=0)
 entry_SavePath.grid(row=2, column=1,ipadx=100)
 button_SaveFolderOpen.grid(row=2, column=2)
-#raw3
+#raw3 SaveButton
 button_Save.grid(row=3, column=2)
-#raw4
+#raw4 EditSettingWindow & announce
 button_EditImage.grid(row=4, column=2)
 text_Error.grid(row=4,column=1)
-#raw5
+#raw5 ExitApplication
 button_exit.grid(row=5,column=0)
-
+#*----------------------------------------------------------------
 root.mainloop()
