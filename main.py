@@ -2,8 +2,13 @@
 import sys
 import os
 import tkinter as tk
+import subprocess,shlex
 from tkinter import ttk,filedialog as filedialog,messagebox
 from PIL import ImageTk,Image
+
+#実行確認用スクリプト
+com = shlex.split("mkdir ./abc")
+proc = subprocess.call(com)
 
 #初期化
 isSave = True

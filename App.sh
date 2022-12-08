@@ -1,6 +1,7 @@
 #!/bin/bash
-export DISPLAY = :0
-printenv DISPLAY
+export DISPLAY=:0
+echo $DISPLAY
+python -m tkinter
 cd /home/hosoya/ドキュメント/app/ImageEditApplication
-python3 main.py
+python main.py
 exit 0
