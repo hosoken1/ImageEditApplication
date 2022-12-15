@@ -1,0 +1,8 @@
+ACTION=="add",\
+SUBSYSTEMS=="usb",\
+ENV{DISPLAY}=":0",\
+ENV{DEVTYPE}=="usb_device",\
+ATTRS{idVendor}=="23a9",\
+ATTRS{idProduct}=="ef18",\
+MODE="666",\
+RUN+="/bin/bash /home/hosoya/ドキュメント/app/ImageEditApplication/App.sh"
