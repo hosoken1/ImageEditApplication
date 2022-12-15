@@ -3,7 +3,6 @@ import sys
 import os
 import json
 import tkinter as tk
-import subprocess,shlex
 from tkinter import ttk,filedialog as filedialog,messagebox
 from PIL import ImageTk,Image
 #--------JSONを扱う関数の定義-------------------------
@@ -33,11 +32,6 @@ def SaveData():
         saveF.truncate()
     
 #--------------------------------------------------
-
-
-#実行確認用スクリプト
-com = shlex.split("mkdir ./abc")
-proc = subprocess.call(com)
 
 #初期化
 settingData = LoadData()
