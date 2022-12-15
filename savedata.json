@@ -1,0 +1,13 @@
+{
+    "isSave": false,
+    "isMono": true,
+    "isGray": true,
+    "isResize": true,
+    "isCrop": true,
+    "resize_width": "500",
+    "resize_height": "500",
+    "crop_Left": 0,
+    "crop_Right": 0,
+    "crop_Up": 0,
+    "crop_Down": 0
+}

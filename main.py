@@ -1,27 +1,57 @@
 #インポート
 import sys
 import os
+import json
 import tkinter as tk
 import subprocess,shlex
 from tkinter import ttk,filedialog as filedialog,messagebox
 from PIL import ImageTk,Image
+#--------JSONを扱う関数の定義-------------------------
+def LoadData():
+    with open('savedata.json','r') as saveData:
+        data_dict = json.load(saveData)
+        data_json = json.dumps(data_dict)
+    return data_dict
+def SaveData():
+    tempData = LoadData()
+    tempData['isSave'] = isSave
+    #print("isSave:{} Data:{}",isSave,tempData['isSave'])
+    tempData['isMono'] = isMono
+    tempData['isGray'] = isGray
+    tempData['isResize'] = isResize
+    tempData['isCrop'] = isCrop
+    tempData['resize_width'] = resize_width
+    tempData['resize_height'] = resize_height
+    tempData['crop_Left'] = crop_Left
+    tempData['crop_Right'] = crop_Right
+    tempData['crop_Up'] = crop_Up
+    tempData['crop_Down'] = crop_Down
+    
+    with open('savedata.json',mode='w') as saveF:
+        saveF.seek(0)
+        json.dump(tempData,saveF,indent=4)
+        saveF.truncate()
+    
+#--------------------------------------------------
+
 
 #実行確認用スクリプト
 com = shlex.split("mkdir ./abc")
 proc = subprocess.call(com)
 
 #初期化
-isSave = True
-isMono = True
-isGray = True
-isResize = True
-isCrop = True
-resize_width = 0
-resize_height = 0
-crop_Left = 0
-crop_Right = 0
-crop_Up = 0
-crop_Down = 0
+settingData = LoadData()
+isSave = settingData['isSave']
+isMono = settingData['isMono']
+isGray = settingData['isGray']
+isResize = settingData['isResize']
+isCrop = settingData['isCrop']
+resize_width = settingData['resize_width']
+resize_height = settingData['resize_height']
+crop_Left = settingData['crop_Left']
+crop_Right = settingData['crop_Right']
+crop_Up = settingData['crop_Up']
+crop_Down = settingData['crop_Down']
 
 # * rootメインウィンドウの設定など
 root = tk.Tk()
@@ -34,6 +64,7 @@ frame = ttk.Frame(root)
 frame.grid(column=0, row=0, sticky=tk.NSEW, padx=5, pady=10)
 
 # * 関数の定義
+
 def ExitApplication():
     ret = messagebox.askyesno('アプリケーションの終了','アプリケーションを終了しますか？')
     if(ret == True):
@@ -314,6 +345,7 @@ def Apply_Crop():
 def Quit_Setting():
     ret = messagebox.askyesno('確認','設定を終了してもよろしいですか？')
     if(ret == True):
+        SaveData()
         settingWindow.destroy()
 # * -----------------------------------------------------------------
 
