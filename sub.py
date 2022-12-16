@@ -67,7 +67,7 @@ class AutoSavaImg():
         return _img_croped
 
     def LoadData(self):
-        rpath = r'.\savedata.json'
+        rpath = 'savedata.json'
         with open(rpath,"r") as saveData:
             data_dict = json.load(saveData)
             data_json = json.dumps(data_dict)
