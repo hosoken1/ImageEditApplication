@@ -8,7 +8,6 @@ from PIL import ImageTk,Image
 
 class Application(tk.Frame):
     def __init__(self):
-        self.datapath = r".\savedata.json"
         #初期化
         settingData = self.LoadData()
         self.isSave = settingData['isSave']
@@ -46,14 +45,14 @@ class Application(tk.Frame):
 
     #--------JSONを扱う関数の定義-------------------------
     def LoadData(self):
-        rpath = r'.\savedata.json'
+        rpath = r'./savedata.json'
         with open(rpath,"r") as saveData:
             data_dict = json.load(saveData)
             data_json = json.dumps(data_dict)
             print('{}'.format(data_json))
         return data_dict
     def SaveData(self):
-        rpath = r'.\savedata.json'
+        rpath = r'./savedata.json'
         tempData = self.LoadData()
         tempData['isSave'] = self.isSave
         tempData['isMono'] = self.isMono
