@@ -45,14 +45,14 @@ class Application(tk.Frame):
 
     #--------JSONを扱う関数の定義-------------------------
     def LoadData(self):
-        rpath = r'./savedata.json'
-        with open(rpath,"r") as saveData:
+        path = 'savedata.json'
+        with open(path,"r") as saveData:
             data_dict = json.load(saveData)
             data_json = json.dumps(data_dict)
             print('{}'.format(data_json))
         return data_dict
     def SaveData(self):
-        rpath = r'./savedata.json'
+        path = 'savedata.json'
         tempData = self.LoadData()
         tempData['isSave'] = self.isSave
         tempData['isMono'] = self.isMono
@@ -66,7 +66,7 @@ class Application(tk.Frame):
         tempData['crop_Up'] = self.crop_Up
         tempData['crop_Down'] = self.crop_Down
 
-        with open(rpath,mode='w') as saveF:
+        with open(path,mode='w') as saveF:
             saveF.seek(0)
             json.dump(tempData,saveF,indent=4)
             saveF.truncate()
