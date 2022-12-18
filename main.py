@@ -354,7 +354,7 @@ class Application(tk.Frame):
         # * --------------各種ウィジェットの作成-------------------------------
         global entry_SavePath,entry_ImagePath,text_Error
         self.canvas = tk.Canvas(self.frame,bg="white", height=200, width=400)
-        text = ttk.Label(self.frame, text='フォルダ指定：')
+        text = ttk.Label(self.frame, text='ファイル指定：')
         text_SaveFolder = ttk.Label(self.frame, text='保存先：')
         self.text_Error = ttk.Label(self.frame, text='',foreground='#ff0000')
         self.entry_ImagePath = ttk.Entry(self.frame)
